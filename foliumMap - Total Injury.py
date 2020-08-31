@@ -2,13 +2,13 @@ import pandas as pd
 import folium
 import json
 
-df = pd.read_csv("D:/Work/TheDataArt/Road Accident SA/2019_DATA_SA_Crash.csv") 
-zipcode_data = df.groupby(['Postcode'], as_index=False).agg({'REPORT_ID': 'count'}).rename(columns={'REPORT_ID':'Count'})
-zipcode_data.columns = ['postcode', 'count']
+df = pd.read_csv("2019_DATA_SA_Crash.csv") 
+zipcode_data = df.groupby(['Postcode'], as_index=False).agg({'REPORT_ID': 'count'}).rename(columns={'REPORT_ID':'total_crash'})
+zipcode_data.columns = ['postcode', 'total_crash']
 zipcode_data['postcode'] = zipcode_data['postcode'].apply(str)
 print(zipcode_data)
 zipcode_data.to_csv("Total_accident.csv")
-""" 
+
 # Get geo data file path
 geo_data_file = "D:/Work/TheDataArt/Road Accident SA/Suburbs_GDA2020.geojson"
 
@@ -28,15 +28,9 @@ new_json['type'] = 'FeatureCollection'
 new_json['features'] = geozips
 # save uodated JSON object
 open("cleaned_geodata.json", "w").write(json.dumps(new_json, sort_keys=True, indent=4, separators=(',', ': ')))
- """
+ 
 
 def map_feature_by_zipcode(zipcode_data, col):
-    """
-    Generates a folium map of SA
-    :param zipcode_data: zipcode dataset
-    :param col: feature to display
-    :return: m
-    """
 
     # read updated geo data
     king_geo = "cleaned_geodata.json"
@@ -63,4 +57,4 @@ def map_feature_by_zipcode(zipcode_data, col):
 
     return m
 
-map_feature_by_zipcode(zipcode_data, 'count')
+map_feature_by_zipcode(zipcode_data, 'total_crash')
